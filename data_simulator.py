@@ -31,12 +31,32 @@ def load_source_data():
 
 def introduce_corruption(df):
     df = df.copy()
-    # 1.5% of 405184 = ~6077 rows with null sensor_id
-    corrupt_ids = random.sample(range(len(df)), max(1, int(len(df) * 0.015)))
-    df.loc[corrupt_ids, 'sensor_id'] = None
-    # 1.5% of 405184 = ~6077 rows with impossible temperature
-    corrupt_temp = random.sample(range(len(df)), max(1, int(len(df) * 0.015)))
-    df.loc[corrupt_temp, 'temp'] = 999.0
+    chunk_size = config['pipeline']['chunk_size']
+    
+    total_chunks = len(df) // chunk_size
+    num_corrupt_chunks = max(1, int(total_chunks * 0.15))
+    
+    # Randomly pick 15% of chunks to corrupt
+    corrupt_chunk_indices = random.sample(range(total_chunks), num_corrupt_chunks)
+    
+    for chunk_idx in corrupt_chunk_indices:
+        start_row = chunk_idx * chunk_size
+        end_row = start_row + chunk_size
+        
+        # Each corrupt chunk gets random type of corruption
+        corruption_type = random.choice(['null_sensor', 'bad_temp', 'both'])
+        
+        if corruption_type in ['null_sensor', 'both']:
+            n = random.randint(2, 15)
+            corrupt_ids = random.sample(range(start_row, end_row), n)
+            df.loc[corrupt_ids, 'sensor_id'] = None
+        
+        if corruption_type in ['bad_temp', 'both']:
+            n = random.randint(2, 15)
+            corrupt_temp = random.sample(range(start_row, end_row), n)
+            # 999.0 is physically impossible — will fail range validation
+            df.loc[corrupt_temp, 'temp'] = 999.0
+
     return df
 
 def split_and_drop_files(df):

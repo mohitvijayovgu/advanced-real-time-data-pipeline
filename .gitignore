@@ -1,3 +1,12 @@
+# Project specific
+data/*.csv
+quarantine/*.csv
+logs/*.log
+processed/*.csv
+*.env
+.env
+test_pipeline.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

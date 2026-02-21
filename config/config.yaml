@@ -3,5 +3,23 @@ pipeline:
   processed_folder: "processed/"
   quarantine_folder: "quarantine/"
   log_folder: "logs/"
-  poll_interval: 5
-  chunk_size: 500
+  poll_interval: 1
+  chunk_size: 4000
+
+validation:
+  required_fields:
+    - sensor_id
+    - timestamp
+  numeric_fields:
+    - co
+    - humidity
+    - lpg
+    - smoke
+    - temp
+  boolean_fields:
+    - light
+    - motion
+  temperature_min: -50
+  temperature_max: 50
+  humidity_min: 0
+  humidity_max: 100
