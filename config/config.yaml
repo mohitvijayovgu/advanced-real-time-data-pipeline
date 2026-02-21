@@ -1,0 +1,7 @@
+pipeline:
+  watch_folder: "data/"
+  processed_folder: "processed/"
+  quarantine_folder: "quarantine/"
+  log_folder: "logs/"
+  poll_interval: 5
+  chunk_size: 500
