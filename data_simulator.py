@@ -14,12 +14,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SOURCE_FILE = os.path.join(BASE_DIR, "iot_telemetry_data.csv")
 DATA_DIR = os.path.join(BASE_DIR, config['pipeline']['watch_folder'])
 
-DEVICE_LOCATION_MAP = {
-    'b8:27:eb:bf:9d:51': 'Lab-A',
-    '00:0f:00:70:91:0a': 'Lab-B',
-    '1c:bf:ce:15:ec:4d': 'Lab-C',
-}
-
 def load_source_data():
     df = pd.read_csv(SOURCE_FILE)
     # Convert unix epoch to readable timestamp directly in same column

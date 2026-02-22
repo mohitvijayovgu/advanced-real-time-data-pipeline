@@ -61,48 +61,29 @@ def validate_ranges(df):
 
     return errors
 
-def quarantine_file(filepath, errors, df=None):
+def quarantine_file(filepath,errors):
     filename = os.path.basename(filepath)
     quarantine_dir = config['pipeline']['quarantine_folder']
-
     os.makedirs(quarantine_dir, exist_ok=True)
-    
+
     # Move file from data/ to quarantine/
     quarantine_path = os.path.join(quarantine_dir, filename)
     os.rename(filepath, quarantine_path)
 
     log_dir = config['pipeline']['log_folder']
-    os.makedirs(log_dir, exist_ok=True)
+    os.makedirs(log_dir, exist_ok = True)
     log_path = os.path.join(log_dir, 'quarantine.log')
 
     # Append mode so previous log entries are never overwritten
     with open(log_path, 'a') as f:
         f.write(f"\n{'='*50}\n")
         f.write(f"File: {filename}\n")
-        f.write(f"Reasons:\n")
+        f.write(f"Reason:\n")
         for error in errors:
-            f.write(f"  - {error}\n")
-        
-        if df is not None:
-            f.write(f"\nRow level details:\n")
-            
-            # Filter rows where sensor_id is null
-            null_rows = df[df['sensor_id'].isnull()]
-            if not null_rows.empty:
-                f.write(f"  Null sensor_id ({len(null_rows)} rows):\n")
-                for idx, row in null_rows.iterrows():
-                    # Log key fields so issue is immediately identifiable
-                    f.write(f"    Row {idx}: timestamp={row['timestamp']}, temp={row['temp']}, humidity={row['humidity']}\n")
-            
-            # Filter rows where temp is physically impossible
-            bad_temp_rows = df[df['temp'] > 50]
-            if not bad_temp_rows.empty:
-                f.write(f"  Bad temp ({len(bad_temp_rows)} rows):\n")
-                for idx, row in bad_temp_rows.iterrows():
-                    # Log sensor_id so we know which device sent bad reading
-                    f.write(f"    Row {idx}: timestamp={row['timestamp']}, sensor_id={row['sensor_id']}, temp={row['temp']}\n")
+            f.write(f" - {error}\n")
 
     logger.warning("File quarantined: %s", filename)
+
 
 def validate(filepath):
     filename = os.path.basename(filepath)
@@ -128,7 +109,7 @@ def validate(filepath):
     if all_errors:
         logger.warning("File %s failed validation: %s", filename, all_errors)
         # Pass df to log exact row details in quarantine
-        quarantine_file(filepath, all_errors, df)
+        quarantine_file(filepath, all_errors)
         return None, all_errors
 
     logger.info("File %s passed validation", filename)
