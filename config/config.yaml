@@ -3,7 +3,7 @@ pipeline:
   processed_folder: "processed/"
   quarantine_folder: "quarantine/"
   log_folder: "logs/"
-  poll_interval: 1
+  poll_interval: 6
   chunk_size: 4000
 
 validation:
