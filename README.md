@@ -2,6 +2,7 @@
 
 A real-time data pipeline that monitors a folder for incoming IoT sensor CSV files, validates and transforms each file, computes aggregated metrics per device, and stores everything in a PostgreSQL database — fully automated with fault tolerance and zero manual intervention.
 
+---
 
 ## Overview
 
@@ -10,6 +11,7 @@ A real-time data pipeline that monitors a folder for incoming IoT sensor CSV fil
 - **Processing:** Real-time file monitoring, validation, transformation, aggregation, and storage
 - **Fault Tolerance:** Retry mechanism (3 attempts), quarantine system, connection pooling, row-level deduplication via `PRIMARY KEY(sensor_id, timestamp)`
 
+---
 
 ## Quick Start
 
@@ -63,8 +65,11 @@ tail -f logs/pipeline.log
 cat logs/quarantine.log
 ```
 
+---
+
 ## Project Structure
 
+```
 ├── main.py                 # Entry point — starts simulator + monitor
 ├── data_simulator.py       # Simulates real-time sensor data with 15% corruption
 ├── config.yaml             # All pipeline settings
@@ -78,3 +83,4 @@ cat logs/quarantine.log
 │   └── db_handler.py       # Connection pool, batch inserts, retry
 └── sql/
     └── schema.sql          # PostgreSQL schema with indexes
+```
